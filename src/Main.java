@@ -20,6 +20,78 @@ class Main{
 		//ResourceManager.loadFileEmployee();
 
 		System.out.println("Welcome Time Manager!\n\n\n\n");
+		if(args.length>0 && args != null) {
+			
+			try{
+				attList = ResourceManager.readLocalDateTimesFromExcelFile(args[0]);
+
+				System.out.println("File contain Employee Count:"+attList.size()+" in Total");
+				System.out.println("Team Name");
+				for(Attendance list: attList) System.out.println("ID: "+list.getEmployee().getID()+" "+list.getEmployee().getName());
+					
+				Comparator<Attendance> byEmployeeID = (e1,e2) -> Integer.valueOf(e1.getEmployee().getID()) - Integer.valueOf(e2.getEmployee().getID());
+				Collections.sort(attList,byEmployeeID); 
+			
+			}
+			catch(IOException e){
+			 	e.printStackTrace();
+		
+			}
+			catch(InvalidFormatException e){
+				System.out.println("Cannot Read file! Reason: Invalid Format, File not found or doesnt exist please check file name correctly!");
+				e.printStackTrace();
+			}
+			
+			System.out.print("\n\nOutput File Name: ");
+			
+			
+
+			try{
+					 
+					ResourceManager.outputFileName = args[1];
+
+					ResourceManager.writeExcelfile(args[1]);
+					
+
+			}catch(IOException e){
+
+					e.printStackTrace();
+			}
+
+
+
+
+			for(Attendance att:attList){
+				
+		
+				att.printAttendance();
+
+				
+			}
+
+			for(Attendance att:attList){
+			     try{
+				att.printToFile();
+
+			     }catch(IOException e){
+				  e.printStackTrace();
+			     }
+			}
+			
+
+
+			System.out.println("Success!");
+			System.out.println("Press any key to exit!");
+
+			
+			
+			
+
+		 }
+		
+		
+		/*
+		
 		System.out.print("Input File Source: ");
 		Scanner sc = new Scanner(System.in);
 			 
@@ -91,7 +163,7 @@ class Main{
 		System.out.println("Success!");
 		System.out.println("Press any key to exit!");
 			   
-		
+		*/
 
 	}
 }

@@ -1,2 +1,2 @@
 @echo off
-java -cp lib/poi-4.1.2/*;lib/poi-4.1.2/lib/*;lib/poi-4.1.2/ooxml-lib/*;bin/ Main
+java -cp lib/poi-4.1.2/*;lib/poi-4.1.2/lib/*;lib/poi-4.1.2/ooxml-lib/*;bin/ Main C:\Users\Efren\Desktop\Attendance-Extractor\res\Team_Alondra.xls C:\Users\Efren\Desktop\Attendance-Extractor\out\TeamA

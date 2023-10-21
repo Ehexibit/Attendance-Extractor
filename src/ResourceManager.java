@@ -1,5 +1,4 @@
 import java.io.*;
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.Instant;
 import java.time.ZoneId;
@@ -9,8 +8,6 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import java.time.Duration;
 import java.time.format.DateTimeFormatter;
-import java.io.FileOutputStream;
-import java.io.PrintStream;
 
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Cell;
@@ -19,6 +16,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 
 
@@ -252,7 +250,69 @@ class ResourceManager{
         	return attendanceList;
 		
 	}
+	public static void writeExcelfile(String path)throws IOException{
+		// Create a new workbook
+        Workbook workbook = new XSSFWorkbook();
+		Sheet sheet = workbook.createSheet("Sheet1");
+		 //Row row = sheet.getRow(0);
+		 
+		 	
+		 	int rowN = 0;
+		 //attendanceList is the attendance of all the employee content of the excel, change name for more detail representation	
+		 	
+		 for(Attendance attendance: attendanceList) {
+			 
+			 int cellN = 0;
+			 Row row = sheet.createRow(rowN++); // Start from the very first row, increase rowN number to write on new row
+			 Cell cell = row.createCell(cellN); //Start at the very first column of that row
+			 	   
+			 
+			 	cell.setCellValue(attendance.getEmployee().getName()); //Add formating later like font size and style etc
+			 	rowN++;
+			 	for(int i=0; i<attendance.list_TimeIN.size(); i++) {
+			 		cellN = 0;
+			 		row = sheet.createRow(rowN++); 
+			 		cell = row.createCell(cellN);
+			 		cell.setCellValue(attendance.list_TimeIN.get(i).format(formatter));
+			 		
+			 		for(int j=0; j<attendance.list_TimeOUT.size(); j++) {
+			 			
+			 			Duration d = Duration.between(attendance.list_TimeIN.get(i),attendance.list_TimeOUT.get(j));
+			 			
+			 			if(d.toHours()> 6 && d.toHours()<12) {
+			 				
+			 				cell = row.createCell(++cellN);
+				 			cell.setCellValue(attendance.list_TimeOUT.get(j).format(formatter));
+			 				
+			 			}
+			 			
+			 		}
+			 		
+			 	}
+			 	rowN++;
+			 	
+			 
+		 }
+		 sheet.autoSizeColumn(0);
+		 sheet.autoSizeColumn(1);
+		 sheet.autoSizeColumn(2);
 
+
+		// Write the workbook to a file
+        try (FileOutputStream fileOut = new FileOutputStream(path+".xlsx")) {
+            workbook.write(fileOut);
+            System.out.println("Excel file has been created successfully!");
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                workbook.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+	}
 	
 	public static void fileWriteOut(String name)throws IOException{
 		FileOutputStream fileOut = new FileOutputStream(name);
